@@ -25,10 +25,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateUser(Long userId,User user) {
+    public void updateUser(Long userId,User user,String firstName, String lastName,String email) {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         user = entityManager.find(User.class,userId);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmail(email);
         entityManager.persist(user);
         transaction.commit();
     }

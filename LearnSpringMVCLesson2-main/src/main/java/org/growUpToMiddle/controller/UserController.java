@@ -1,7 +1,5 @@
 package org.growUpToMiddle.controller;
 
-import lombok.RequiredArgsConstructor;
-import org.growUpToMiddle.dao.UserDaoImpl;
 import org.growUpToMiddle.model.User;
 import org.growUpToMiddle.service.UserService;
 import org.growUpToMiddle.service.UserServiceImpl;
@@ -12,36 +10,42 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-@RequiredArgsConstructor
+
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/users")
     public String getUsersPage(Model model) {
-        model.addAttribute("users", userServiceImpl.getAllUsers());
-        return "/users";
+        model.addAttribute("users", userService.getAllUsers());
+        return "users";
     }
 
     @PostMapping("/users")
     public String addUser(User user) {
-        userServiceImpl.addUser(user);
+        userService.addUser(user);
         return "redirect:/users";
     }
 
-    @GetMapping("/users/{user-id}")
-    public String getUserPage(@PathVariable("user-id") Long id, Model model) {
-        model.addAttribute("user", userServiceImpl.getUserById(id));
+    @GetMapping("/users/{id}")
+    public String getUserPage(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("user", userService.getUserById(id));
         return "/user";
     }
 
     @PostMapping("/user/{id}/update")
-    public String updateUser(@PathVariable("id") Long userId,User user) {
-        userServiceImpl.updateUser(userId,user);
-        return "redirect:/user/{id}" + userId;
+    public String updateUser(@PathVariable("id") Long userId,User user,String firstName, String lastName,String email) {
+        System.out.println(user);
+        userService.updateUser(userId,user,firstName,  lastName, email);
+        return "redirect:/users/" + userId;
     }
 
     @GetMapping("/users/{id}/delete")
     public String updateUser(@PathVariable("id") Long userId) {
-        userServiceImpl.deleteUser(userId);
+        userService.deleteUser(userId);
         return "redirect:/users";
     }
 
